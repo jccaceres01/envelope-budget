@@ -30,7 +30,7 @@ const defaults = [
 // Envelopes array
 const envelopes = defaults.map(env => env);
 
-// Vallidate functions
+// Validate functions
 const validEnvelope = (envelope) => {
   if (!envelope.id || typeof envelope.id !== 'string') return false;
   if (!envelope.title || envelope.title.trim() === '') return false;
@@ -70,14 +70,17 @@ const addToEnvelope = (envelope) => {
 // Update envelopes
 const updateEnvelope = (envelopeId, newEnvelopeData) => {
   const found = envelopes.find(env => env.id === envelopeId);
-
+  console.log(newEnvelopeData);
   if (found) {
     for (key in found) {
-      found[key] = (newEnvelopeData[key]) ? newEnvelopeData[key] : found[key]
+      console.log(`key: ${key}, Value: ${found[key]}`);
+      found[key] = (key in newEnvelopeData) ? newEnvelopeData[key] : found[key]
     }
-  }
 
-  return found;
+    return found;
+  } else {
+    return null;
+  }
 }
 
 // Delete envelope by id
