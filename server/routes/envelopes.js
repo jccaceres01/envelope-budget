@@ -10,15 +10,15 @@ const {
 
 router.get('/', (re, res) => {
   const envelopes = getAllFromEnvelopes();
-  res.json(envelopes);
+  res.send(envelopes);
 });
 
 router.get('/:envelopeId', (req, res) => {
   const found = getEnvelopeById(req.params.envelopeId);
   if (found) {
-    return res.json(found);
+    return res.send(found);
   } else {
-    return res.status(404).json('Not found');
+    return res.status(404).send('Not found');
   }
 });
 
@@ -26,9 +26,9 @@ router.post('/', (req, res) => {
   const envelopeData = req.body;
   const envelope = addToEnvelope(envelopeData);
   if (envelope) {
-    return res.status(201).json(envelope);
+    return res.status(201).send(envelope);
   } else {
-    return res.status(400).json('Cannot add new envelope');
+    return res.status(400).send('Cannot add new envelope');
   }
 });
 
@@ -38,21 +38,21 @@ router.put('/:envelopeId', (req, res) => {
   if (envelope) {
     const updatedEnvelope = updateEnvelope(envelope.id, envelopeData);
     if (updateEnvelope) {
-      return res.status(200).json(updatedEnvelope);
+      return res.status(200).send(updatedEnvelope);
     } else {
-      return res.status(400).json('Error updating envelope');
+      return res.status(400).send('Error updating envelope');
     }
   } else {
-    return res.status(404).json('Envelope not found');
+    return res.status(404).send('Envelope not found');
   }
 });
 
 router.delete('/:envelopeId', (req, res) => {
   const deleted = deleteFromEnvelopesById(req.params.envelopeId);
   if (deleted) {
-    return res.json(true);
+    return res.send(true);
   } else {
-    return res.status(404).json('Not found');
+    return res.status(404).send('Not found');
   }
 });
 
@@ -70,12 +70,32 @@ router.get('/transfer/:from/:to', (req, res) => {
         budget: 0
       });
       
-      return res.json(updatedToEnvelope);
+      return res.send([updatedToEnvelope, updatedFromEnvelope]);
     } else {
-      return res.status(400).json('nothing to transfer');
+      return res.status(400).send('nothing to transfer');
     }
   } else {
-    return res.status(404).json('Envelope not found or same envelope');
+    return res.status(404).send('Envelope not found or same envelope');
+  }
+});
+
+router.post('/distribution', (req, res) => {
+  const envelopes = getAllFromEnvelopes();
+
+  if (!req.body.amount || req.body.amount <= 0) return res.status(400)
+    .send('Cannot perform a distribution of amount less than zero');
+  
+  if (envelopes.length > 0) {
+    const totalToDistribute = parseFloat(req.body.amount) / envelopes.length;
+    envelopes.forEach(env => {
+      updateEnvelope(env.id, {
+        budget: env.budget + totalToDistribute
+      });
+    });
+
+    return res.json(true);
+  } else {
+    return res.status(404).send('No envelopes');
   }
 });
 
