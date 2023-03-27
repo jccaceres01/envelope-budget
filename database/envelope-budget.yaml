@@ -1,0 +1,588 @@
+openapi: 3.0.3
+info:
+  title: Envelopes API
+  version: 1.0.0
+  description: API to manage envelope budget method
+  contact:
+    email: jccaceres01@gmail.com
+    name: Julio Caceres
+  license:
+    name: GPL
+paths:
+  /envelopes:
+    summary: Get a list of envelopes
+    description: Envelopes with the budget
+    get:
+      summary: Get all envelopes
+      description: Get all envelopes from the database
+      operationId: get_envelope
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Envelopes:
+                  value: |-
+                    [
+                        {
+                            "id": 27,
+                            "title": "vitae",
+                            "budget": 3660.5102040816328,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 28,
+                            "title": "consectetur",
+                            "budget": 4406.510204081633,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 29,
+                            "title": "numquam",
+                            "budget": 4609.510204081633,
+                            "createdAt": null,
+                            "updatedAt": null
+                        }
+                    ]
+        default:
+          description: Default error sample response
+      tags:
+        - Envelopes
+    post:
+      summary: Create and envelope
+      description: Add envelope  to  the list  of envelopes
+      operationId: add_envelope
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              examples:
+                Create Envelope:
+                  value: |-
+                    {
+                        "id": 3,
+                        "title": "repudiandae",
+                        "budget": 1397.5102040816325,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '400':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Error adding  envelope:
+                  value: Cannot add new envelope
+        default:
+          description: Default error sample response
+      requestBody:
+        description: New envelope object contening the data for 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Envelope'
+      tags:
+        - Envelopes
+  /envelopes/{envelopeId}/transactions:
+    summary: Get transactions
+    description: Envelopes relates  transactions
+    get:
+      summary: Get all transactions
+      description: The all the transactions for the specific envelope
+      operationId: get_transactions
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Transactions Array:
+                  value: |-
+                    [
+                        {
+                            "id": 5,
+                            "date": "2023-03-26T00:33:05.945Z",
+                            "payment_amount": 210,
+                            "payment_recipient": "Yuli Perez",
+                            "envelope_id": 12,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 6,
+                            "date": "2023-03-26T00:33:05.945Z",
+                            "payment_amount": 230,
+                            "payment_recipient": "Rocio Dulcar",
+                            "envelope_id": 12,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 7,
+                            "date": "2023-03-26T00:33:05.945Z",
+                            "payment_amount": 600,
+                            "payment_recipient": "Mario Cezpedes",
+                            "envelope_id": 12,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 8,
+                            "date": "2023-01-01T04:00:00.000Z",
+                            "payment_amount": 34000,
+                            "payment_recipient": "Raul Medina",
+                            "envelope_id": 12,
+                            "createdAt": null,
+                            "updatedAt": null
+                        }
+                    ]
+        default:
+          description: Default error sample response
+      tags:
+        - Transactions
+    post:
+      summary: Create transaction
+      description: Add new  transaction to the specific envelope
+      operationId: add_transaction
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: created
+          content:
+            application/json:
+              examples:
+                New transaction:
+                  value: |-
+                    {
+                        "id": 11,
+                        "date": "2023-01-01T04:00:00.000Z",
+                        "payment_amount": 1200,
+                        "payment_recipient": "Karl Sagan",
+                        "envelope_id": 100,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '400':
+          description: bad request
+          content:
+            application/json:
+              examples:
+                Error:
+                  value: Cannot add new transaction
+        default:
+          description: Default error sample response
+      requestBody:
+        description: Data with the transaction information
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      tags:
+        - Transactions
+  /envelopes/{envelopeId}:
+    summary: specific envelope
+    get:
+      summary: Get specific envelope by id
+      description: ''
+      operationId: get_envelope_by_id
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id to find the envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Envelope:
+                  value: |-
+                    {
+                        "id": 3,
+                        "title": "repudiandae",
+                        "budget": 1397.5102040816325,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not Found:
+                  value: Not Found
+        default:
+          description: Default error sample response
+      tags:
+        - Envelopes
+    put:
+      summary: Update envelope
+      description: Update envelope by specific ID
+      operationId: update_envelope
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id to find the envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Updated Envelope:
+                  value: |
+                    {
+                        "id": 3,
+                        "title": "repudiandae",
+                        "budget": 1397.5102040816325,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '400':
+          description: bad request
+          content:
+            application/json:
+              examples:
+                Error Updating:
+                  value: Error updating envelope
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not found:
+                  value: Envelope not found
+        default:
+          description: Default error sample response
+      requestBody:
+        description: Object contening the data to update the envelope
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Envelope'
+      tags:
+        - Envelopes
+    delete:
+      summary: Delete an envelope
+      description: Delete envelope from data by specific id
+      operationId: delete_envelope
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id to find the envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Ok:
+                  value: 'true'
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not Found:
+                  value: Not Found
+        default:
+          description: Default error sample response
+      tags:
+        - Envelopes
+  /envelopes/{envelopeId}/transactions/{transactionId}:
+    summary: Transactions specific operations
+    get:
+      summary: Get transaction by id
+      description: Get specific transaction by envelope id and transaction id
+      operationId: get_transaction_by_id
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+        - name: transactionId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Transaction:
+                  value: |-
+                    {
+                        "id": 11,
+                        "date": "2023-03-03T04:00:00.000Z",
+                        "payment_amount": 200,
+                        "payment_recipient": "Karl Sagan ed",
+                        "envelope_id": 100,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '404':
+          description: Not found
+          content:
+            application/json:
+              examples:
+                Not found:
+                  value: Transaction not found
+        default:
+          description: Default error sample response
+      tags:
+        - Transactions
+    put:
+      summary: Update transaction
+      description: Update transaction by specific envelope id and specific transaction id
+      operationId: update_transaction
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+        - name: transactionId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Updated transaction:
+                  value: |-
+                    {
+                        "id": 11,
+                        "date": "2023-03-03T04:00:00.000Z",
+                        "payment_amount": 200,
+                        "payment_recipient": "Karl Sagan ed",
+                        "envelope_id": 100,
+                        "createdAt": null,
+                        "updatedAt": null
+                    }
+        '400':
+          description: bad request
+          content:
+            application/json:
+              examples:
+                Error:
+                  value: Error updating transaction
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not Found:
+                  value: Transaction not found
+        default:
+          description: Default error sample response
+      requestBody:
+        description: Transaction object with data to update the transaction
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Transaction'
+      tags:
+        - Transactions
+    delete:
+      summary: Delete transaction
+      description: Delete transaction by specific envelope id and specific transaction id
+      operationId: delete_transaction
+      parameters:
+        - name: envelopeId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+        - name: transactionId
+          in: path
+          description: 'The id o envelope'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Deleted  Transaction:
+                  value: 'true'
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not found:
+                  value: Transaction not found
+        default:
+          description: Default error sample response
+      tags:
+        - Transactions
+  /envelopes/transfer/{from}/{to}:
+    summary: transafer between envelopes
+    description: Transafer amount from one envelope to another envelope
+    get:
+      summary: Transfer between envelopes
+      description: Transfer amount from one envelope to another envelope
+      operationId: transfer
+      parameters:
+        - name: from
+          in: path
+          description: 'The id of envelope to transfer amount'
+          required: true
+          schema:
+            type: number
+        - name: to
+          in: path
+          description: 'The id of envelope to receip the amount transafered'
+          required: true
+          schema:
+            type: number
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Transfered  Envelopes:
+                  value: |-
+                    [
+                        {
+                            "id": 12,
+                            "title": null,
+                            "budget": 351.0204081632653,
+                            "createdAt": null,
+                            "updatedAt": null
+                        },
+                        {
+                            "id": 11,
+                            "title": "sephiroth",
+                            "budget": 0,
+                            "createdAt": null,
+                            "updatedAt": null
+                        }
+                    ]
+        '400':
+          description: bad request
+          content:
+            application/json:
+              examples:
+                Nothing:
+                  value: nothing to transafer
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Not found:
+                  value: Envelope not found or same envelope
+        default:
+          description: Default error sample response
+      tags:
+        - Envelopes
+  /envelopes/distribution:
+    summary: Distribute amount between envelopes
+    description: Distribute a specific amount between every envelope in the database
+    post:
+      summary: Distribute and amount between envelope
+      description: Dsitribute the specific amount between envelopes in the database
+      operationId: distribution
+      responses:
+        '200':
+          description: success
+          content:
+            application/json:
+              examples:
+                Distributed:
+                  value: 'true'
+        '404':
+          description: not found
+          content:
+            application/json:
+              examples:
+                Nothing to distribute:
+                  value: No envelopes
+        default:
+          description: Default error sample response
+      requestBody:
+        description: The amount for distribute to envelopes
+        content:
+          application/json:
+            schema:
+              properties:
+                amount:
+                  type: number
+      tags:
+        - Envelopes
+
+components:
+  schemas:
+    Envelope:
+      type: object
+      properties:
+        id:
+          type: number
+        title:
+          type: string
+        budget:
+          type: number
+      xml:
+        name: Envelope
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        date:
+          type: string
+        payment_amount:
+          type: number
+        payment_recipient:
+          type: string
+        envelope_id:
+          type: number
+        createdAt:
+          type: number
+        updatedAt:
+          type: number
+      xml:
+        name: Transaction
+        

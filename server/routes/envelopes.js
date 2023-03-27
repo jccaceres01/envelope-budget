@@ -1,20 +1,23 @@
 const express = require('express');
+const transactionRouter = require('./transactions');
 const router = express.Router();
 const {
-  getAllFromEnvelopes,
+  getEnvelopes,
   getEnvelopeById,
-  addToEnvelope,
+  addEnvelope,
   updateEnvelope,
-  deleteFromEnvelopesById
-} = require('../db');
+  deleteEnvelope
+} = require('../envelopesPersistence');
 
-router.get('/', (re, res) => {
-  const envelopes = getAllFromEnvelopes();
+router.use('/:envelopeId/transactions', transactionRouter);
+
+router.get('/', async (req, res) => {
+  const envelopes = await getEnvelopes();
   res.send(envelopes);
 });
 
-router.get('/:envelopeId', (req, res) => {
-  const found = getEnvelopeById(req.params.envelopeId);
+router.get('/:envelopeId', async (req, res) => {
+  const found = await getEnvelopeById(req.params.envelopeId);
   if (found) {
     return res.send(found);
   } else {
@@ -22,9 +25,9 @@ router.get('/:envelopeId', (req, res) => {
   }
 });
 
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
   const envelopeData = req.body;
-  const envelope = addToEnvelope(envelopeData);
+  const envelope = await addEnvelope(envelopeData);
   if (envelope) {
     return res.status(201).send(envelope);
   } else {
@@ -32,11 +35,11 @@ router.post('/', (req, res) => {
   }
 });
 
-router.put('/:envelopeId', (req, res) => {
+router.put('/:envelopeId', async (req, res) => {
   const envelopeData = req.body;
-  const envelope = getEnvelopeById(req.params.envelopeId);
+  const envelope = await getEnvelopeById(req.params.envelopeId);
   if (envelope) {
-    const updatedEnvelope = updateEnvelope(envelope.id, envelopeData);
+    const updatedEnvelope = await updateEnvelope(envelope.id, envelopeData);
     if (updateEnvelope) {
       return res.status(200).send(updatedEnvelope);
     } else {
@@ -47,8 +50,8 @@ router.put('/:envelopeId', (req, res) => {
   }
 });
 
-router.delete('/:envelopeId', (req, res) => {
-  const deleted = deleteFromEnvelopesById(req.params.envelopeId);
+router.delete('/:envelopeId', async (req, res) => {
+  const deleted = await deleteEnvelope(req.params.envelopeId);
   if (deleted) {
     return res.send(true);
   } else {
@@ -56,17 +59,17 @@ router.delete('/:envelopeId', (req, res) => {
   }
 });
 
-router.get('/transfer/:from/:to', (req, res) => {
-  const fromEnvelope = getEnvelopeById(req.params.from);
-  const toEnvelope = getEnvelopeById(req.params.to);
+router.get('/transfer/:from/:to', async (req, res) => {
+  const fromEnvelope = await getEnvelopeById(req.params.from);
+  const toEnvelope = await getEnvelopeById(req.params.to);
 
   if ((fromEnvelope && toEnvelope) && (fromEnvelope.id !== toEnvelope.id)) {
     if (fromEnvelope.budget > 0) {
       const totalTransfer = fromEnvelope.budget + toEnvelope.budget;
-      const updatedToEnvelope = updateEnvelope(toEnvelope.id, {
+      const updatedToEnvelope = await updateEnvelope(toEnvelope.id, {
         budget: totalTransfer
       });
-      const updatedFromEnvelope = updateEnvelope(fromEnvelope.id, {
+      const updatedFromEnvelope = await updateEnvelope(fromEnvelope.id, {
         budget: 0
       });
       
@@ -79,16 +82,16 @@ router.get('/transfer/:from/:to', (req, res) => {
   }
 });
 
-router.post('/distribution', (req, res) => {
-  const envelopes = getAllFromEnvelopes();
+router.post('/distribution', async (req, res) => {
+  const envelopes = await getEnvelopes();
 
   if (!req.body.amount || req.body.amount <= 0) return res.status(400)
     .send('Cannot perform a distribution of amount less than zero');
   
   if (envelopes.length > 0) {
     const totalToDistribute = parseFloat(req.body.amount) / envelopes.length;
-    envelopes.forEach(env => {
-      updateEnvelope(env.id, {
+    envelopes.forEach(async env => {
+      await updateEnvelope(env.id, {
         budget: env.budget + totalToDistribute
       });
     });
