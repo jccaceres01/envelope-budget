@@ -30,12 +30,9 @@ const DistributeAmount = () => {
 
   const handleDistribution = () => {
     if (parseFloat(amount) > 0) {
-      dispatch(distributeAmount(amount)).then(action => {
-        dispatch(getAllEnvelopes()).then(() => {
-          alert('Distribution Done');
-          navigate('/envelopes');
-        });
-      });
+      dispatch(distributeAmount(amount));
+      alert('Distribution Done');
+      navigate('/envelopes');
     } else {
       alert('Incorrect amount');
     }
@@ -66,8 +63,8 @@ const DistributeAmount = () => {
               { envelopes.map((env, index) => {
                 return <TableRow key={index}>
                   <TableCell>{ env.title }</TableCell>
-                  <TableCell>{ env.budget } (+{parseFloat(amount / envelopes.length)})</TableCell>
-                  <TableCell>{ parseFloat(env.budget) + parseFloat(amount / envelopes.length) || 0 }</TableCell>
+                  <TableCell>{ env.budget.toFixed(2) } (+{parseFloat(amount / envelopes.length).toFixed(2) })</TableCell>
+                  <TableCell>{ (parseFloat(env.budget) + parseFloat(amount / envelopes.length)).toFixed(2) || 0 }</TableCell>
                 </TableRow>
               })}
             </TableBody>

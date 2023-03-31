@@ -69,7 +69,8 @@ router.put('/:transactionId', async (req, res) => {
  * Delete transaction by id
  */
 router.delete('/:transactionId', async (req, res) => {
-  const deleted = await deleteTransaction(req.params.transactionId);
+  const { envelopeId, transactionId } = req.params;
+  const deleted = await deleteTransaction(transactionId, envelopeId);
   if (deleted) {
     return res.send(true);
   } else {

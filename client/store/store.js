@@ -1,9 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
 import envelopesReducer from '../features/envelopes/envelopesSlice.js';
+import transactionsReducer from '../features/transactions/transactionsSlice.js';
 
 const store = configureStore({
   reducer: {
-    envelopes: envelopesReducer
+    envelopes: envelopesReducer,
+    transactions: transactionsReducer
   }
 })
 

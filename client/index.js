@@ -6,6 +6,8 @@ import { RouterProvider } from 'react-router-dom';
 import router from './router/index.jsx';
 import store from './store/store.js';
 import { Provider } from 'react-redux';
+import { LocalizationProvider } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 
 
 const root = createRoot(document.getElementById('root'));

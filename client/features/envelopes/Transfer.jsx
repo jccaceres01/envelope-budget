@@ -71,7 +71,7 @@ const Transfer = () => {
           >
             { envelopes.map((env, index) => {
               if (parseFloat(env.budget) > 0) {
-                return <MenuItem value={env.id} key={index}><strong>{ env.title }</strong>, { env.budget }</MenuItem>
+                return <MenuItem value={env.id} key={index}><strong>{ env.title }</strong>, { env.budget.toFixed(2) }</MenuItem>
               }
             })}
           </Select>
@@ -86,7 +86,7 @@ const Transfer = () => {
             id="to"
           >
             { envelopes.map((env, index) => {
-              return <MenuItem value={env.id} key={index}><strong>{ env.title }</strong>, { env.budget }</MenuItem>
+              return <MenuItem value={env.id} key={index}><strong>{ env.title }</strong>, { env.budget.toFixed(2) }</MenuItem>
             })}
           </Select>
         </FormControl>

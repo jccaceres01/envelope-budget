@@ -4,6 +4,8 @@ import EnvelopesIndex from '../features/envelopes/EnvelopesIndex.jsx';
 import NewEnvelope from '../features/envelopes/NewEnvelope.jsx';
 import Transfer from '../features/envelopes/Transfer.jsx';
 import DistributeAmount from '../features/envelopes/DistributeAmount.jsx';
+import EnvelopeDetail from '../features/envelopes/EnvelopeDetail.jsx';
+import TransactionForm from '../features/transactions/TransactionForm.jsx';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +23,14 @@ const router = createBrowserRouter([
       {
         path: '/envelopes/:id/edit',
         element: <NewEnvelope />
+      },
+      {
+        path: '/envelopes/:id/transactions',
+        element: <EnvelopeDetail />
+      },
+      {
+        path: '/envelopes/:id/transactions/:transactionId/edit',
+        element: <TransactionForm />
       },
       {
         path: '/envelopes/new',

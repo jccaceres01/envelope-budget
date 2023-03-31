@@ -14,6 +14,7 @@ import {
 
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import MoveUpIcon from '@mui/icons-material/MoveUp';
+import InfoIcon from '@mui/icons-material/Info';
 import SystemUpdateAltIcon from '@mui/icons-material/SystemUpdateAlt';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 
@@ -61,10 +62,11 @@ const Envelope = ({envelope}) => {
       &:hover {
         transform: rotate(-3deg);
         transition: 100ms ease-in-out;
+        cursor: pointer;
       }
     `}>
       <h3>{envelope.title}:</h3>
-      <strong>{envelope.budget} $</strong>
+      <strong>{ envelope.budget.toFixed(2) } $</strong>
       <ButtonGroup size="small">
         <Button variant="contained" onClick={() => setShowDialog(true) }>withdraw</Button>
         <Button 
@@ -79,6 +81,10 @@ const Envelope = ({envelope}) => {
           open={open}
           onClose={handleClose}
         >
+          <MenuItem onClick={() => navigate(`/envelopes/${envelope.id}/transactions`)}>
+            <InfoIcon css={css`margin-right: 4px;` }  />
+            Details
+          </MenuItem>
           <MenuItem onClick={() => navigate(`/envelopes/${envelope.id}/edit`)}>
             <SystemUpdateAltIcon css={css`margin-right: 4px;` }  />
             Update

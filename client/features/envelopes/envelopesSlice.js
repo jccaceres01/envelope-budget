@@ -289,7 +289,6 @@ const envelopesSlice = createSlice({
     .addCase(distributeAmount.fulfilled, (state, action) => {
       state.envelopeLoader = false;
       state.envelopeStatus = 'Distribution done';
-      console.log('distributed');
     })
     .addCase(distributeAmount.rejected, (state, action) => {
       state.envelopeLoader = false;
